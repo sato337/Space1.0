@@ -154,6 +154,51 @@ class MenuButton:
         self.flag = self.rect.collidepoint(mouse_pos)
         return self.flag
 
+def main():
+    """Создает меню"""
+    window = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Космическая игра")
+    clock = pygame.time.Clock()
+
+    buttons = [
+        MenuButton(150, "Новая игра"),
+        MenuButton(250, "Случайная галактика"),
+        MenuButton(350, "Управление"),
+        MenuButton(450, "Выход")
+    ]
+
+    while True:
+        mouse_pos = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for i, button in enumerate(buttons):
+                    if button.flag:
+                        if i == 0:
+                            main_game()
+                        elif i == 1:
+                            random_galaxy()
+                        elif i == 2:
+                            show_controls()
+                        elif i == 3:
+                            pygame.quit()
+                            sys.exit()
+
+        window.blit(bg_image, (0, 0))
+
+        for button in buttons:
+            button.check_hover(mouse_pos)
+            button.draw(window)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+
+
 
 class Planet(pygame.sprite.Sprite):
     def __init__(self, x, y, radius, color, orbital_radius):
@@ -335,7 +380,6 @@ class Spaceship(pygame.sprite.Sprite):
         self.velocity[0] += acceleration_x
         self.velocity[1] += acceleration_y
 
-        # Обновляем позицию
         self.x += self.velocity[0]
         self.y += self.velocity[1]
 
@@ -399,48 +443,6 @@ def draw_arrow(screen, ship_pos, target_pos, scale, camera_pos):
 
     pygame.draw.polygon(screen, ARROW_COLOR, points)
 
-
-def main():
-    window = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Космическая игра")
-    clock = pygame.time.Clock()
-
-    buttons = [
-        MenuButton(150, "Новая игра"),
-        MenuButton(250, "Случайная галактика"),
-        MenuButton(350, "Управление"),
-        MenuButton(450, "Выход")
-    ]
-
-    while True:
-        mouse_pos = pygame.mouse.get_pos()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                for i, button in enumerate(buttons):
-                    if button.flag:
-                        if i == 0:
-                            main_game()
-                        elif i == 1:
-                            random_galaxy()
-                        elif i == 2:
-                            show_controls()
-                        elif i == 3:
-                            pygame.quit()
-                            sys.exit()
-
-        window.blit(bg_image, (0, 0))
-
-        for button in buttons:
-            button.check_hover(mouse_pos)
-            button.draw(window)
-
-        pygame.display.flip()
-        clock.tick(60)
 
 
 def create_solar_system(all_sprites, planet_sprites):
